@@ -1,0 +1,13 @@
+pane	0	0	:redis-server	0	:	0	:/Users/nate/Blend/blend	0	mongod	:mongod --dbpath ./mongodb/data/db
+pane	0	0	:redis-server	0	:	1	:/Users/nate/Blend/blend	1	redis28-server	:redis-server *:6379
+pane	0	1	:..blend/backend	1	:*	0	:/Users/nate/Blend/blend	0	zsh	:
+pane	0	1	:..blend/backend	1	:*	1	:/Users/nate/Blend/blend/backend	1	zsh	:
+pane	0	1	:..blend/backend	1	:*	2	:/Users/nate/Blend/blend/backend	0	zsh	:
+pane	0	1	:..blend/backend	1	:*	3	:/Users/nate/Blend/blend/backend	0	zsh	:
+pane	0	2	:..est/artillery	0	:-	0	:/Users/nate/Blend/blend/test/artillery	1	zsh	:
+pane	1	0	:~/Blend/blend	1	:*	0	:/Users/nate/Blend/blend	1	zsh	:
+window	0	0	0	:	653d,204x51,0,0{102x51,0,0,0,101x51,103,0,3}
+window	0	1	1	:*	1f8e,204x51,0,0[204x25,0,0{91x25,0,0,1,112x25,92,0,4},204x25,0,26{102x25,0,26,30,101x25,103,26,31}]
+window	0	2	0	:-	d988,204x51,0,0,29
+window	1	0	1	:*	bf5f,238x63,0,0,2
+state	0	1
