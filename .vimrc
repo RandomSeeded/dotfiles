@@ -1,3 +1,65 @@
+set nocompatible              " be iMproved, required
+filetype off                  " required
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+
+Plugin 'junegunn/fzf'
+Plugin 'junegunn/fzf.vim'
+Plugin 'mileszs/ack.vim'
+Plugin 'leafgarland/typescript-vim'
+Plugin 'tpope/vim-fugitive'
+Plugin 'itchyny/lightline.vim'
+Plugin 'sheerun/vim-polyglot'
+Plugin 'tpope/vim-surround'
+
+
+let g:lightline = {
+\ 'colorscheme': 'Dracula',
+\ }
+
+" Not yet working with local node_modules
+" Plugin 'w0rp/ale'
+
+" you may want to set up youcompleteme instead of tsuquyomi (typescript
+" version only)
+Plugin 'quramy/tsuquyomi'
+
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep'
+endif
+cnoreabbrev Ack Ack!
+nnoremap <Leader>a :Ack!<Space>
+
+" Find file
+nmap <C-p> :GFiles<CR>
+" Find tag under cursor - aka find definition
+nmap ; :call fzf#vim#tags(expand('<cword>'), {'options': '--exact --select-1 --exit-0'})<CR>
+" nmap ; :call fzf#vim#tags(expand('<cword>'), {'options': '--exact --exit-0'})<CR>
+" TODO (decide what hotkey you want here) - Ack aka grep for shit
+map <C-k> :Ack "<cword>"<CR>
+nmap \x :cclose<CR>
+" TODO (nw): figure out a good way to do this
+" nmap \r :!tmux send-keys -t 0:0.1 C-p C-j <CR><CR>
+
+
+if &term =~ '256color'
+    " disable Background Color Erase (BCE) so that color schemes
+    " render properly when inside 256-color tmux and GNU screen.
+    " see also http://snk.tuxfamily.org/log/vim-256color-bce.html
+    set t_ut=
+endif
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+
 " URL: http://vim.wikia.com/wiki/Example_vimrc
 " Authors: http://vim.wikia.com/wiki/Vim_on_Freenode
 " Description: A minimal, but feature rich, example .vimrc. If you are a
@@ -152,9 +214,7 @@ set expandtab
 " which is the default
 map Y y$
  
-" Map <C-L> (redraw screen) to also turn off search highlighting until the
-" next search
-nnoremap <C-L> :nohl<CR><C-L>
+nnoremap \q :nohl<CR><C-L>
  
 "------------------------------------------------------------
 " Custom below
@@ -164,7 +224,7 @@ set t_Co=256
 color badwolf
 
 " ctrlp
-set runtimepath^=~/.vim/bundle/ctrlp.vim
+" set runtimepath^=~/.vim/bundle/ctrlp.vim
 " let g:ctrlp_user_command = 'find %s -type f | grep -v "`cat .ctrlpignore`"'
 
 " Get vim to play nicely with git (autoreload when git has changed files)
@@ -174,11 +234,13 @@ au FocusLost,WinLeave * :silent! w
 " Smarter way to move between panes
 map <left> <C-w><left>
 map <right> <C-w><right>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
 
 " Prevent swap files from messing with linters
-set backupdir=~/.vim/backup//
-set directory=~/.vim/swap//
-set undodir=~/.vim/undo//
+" set backupdir=~/.vim/backup//
+" set directory=~/.vim/swap//
+" set undodir=~/.vim/undo//
 
 " Pathogen
 " execute pathogen#infect()
@@ -194,6 +256,8 @@ set undodir=~/.vim/undo//
 " let g:syntastic_check_on_wq = 0
 " let g:syntastic_jshint_exec='usr/local/bin/jshint'
 
-set wildignore=*/venv/*,*/coverage/*,*/vendor/*,*/bower_components/*,*/dev/*,*/node_modules/*,*.o,*.xml,*.svg,*.yml,*.pyc,*.woff,*.woff2,*.ttf,*.jpeg,*.eot,*.dist,*~      " Ignore temp files in wildmenu
+" set wildignore=*/venv/*,*/coverage/*,*/vendor/*,*/bower_components/*,*/dev/*,*/node_modules/*,*.o,*.xml,*.svg,*.yml,*.pyc,*.woff,*.woff2,*.ttf,*.jpeg,*.eot,*.dist,*~      " Ignore temp files in wildmenu
+" included yml again
+" set wildignore=*/venv/*,*/coverage/*,*/vendor/*,*/bower_components/*,*/dev/*,*/node_modules/*,*.o,*.xml,*.svg,*.pyc,*.woff,*.woff2,*.ttf,*.jpeg,*.eot,*.dist,*~      " Ignore temp files in wildmenu
 
 
