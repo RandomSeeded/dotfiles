@@ -106,7 +106,7 @@ source $ZSH/oh-my-zsh.sh
 alias ag='ag --pager="less -SMRi"'
 alias toupper="tr '[:lower:]' '[:upper:]'"
 alias tolower="tr '[:upper:]' '[:lower:]'"
-alias w3m='w3m google.com'
+# alias w3m='w3m google.com' #todo make this work if only no params
 alias google='/usr/local/bin/google.sh'
 
 # work in progress:
