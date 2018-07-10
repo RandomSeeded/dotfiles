@@ -87,5 +87,28 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-export NVM_DIR="/Users/nate/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+# Blend-specific
+# source /Users/nate/Blend/lending/venv/bin/activate
+# export NODE_ENV=dev DEPLOYMENT=blend-borrower TENANT_LIST=blend-borrower
+# ulimit -n 65536 65536
+# pgrep mongod || ( mkdir -p ~/mongodb/data/db && mongod --dbpath ~/mongodb/data/db > /dev/null 2>&1 & )
+# if [ -f ~/.bashrc ]; then
+# 	source ~/.bashrc
+# fi
+# source /Users/nate/Blend/lending/venv/bin/activate
+# export NODE_ENV=dev DEPLOYMENT=blend-borrower TENANT_LIST=blend-borrower
+# ulimit -n 65536 65536
+# pgrep mongod || ( mkdir -p ~/mongodb/data/db && mongod --dbpath ~/mongodb/data/db > /dev/null 2>&1 & )
+# 
+# export NVM_DIR="/Users/nate/.nvm"
+# [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+
+alias ag='ag --pager="less -SMRi"'
+alias toupper="tr '[:lower:]' '[:upper:]'"
+alias tolower="tr '[:upper:]' '[:lower:]'"
+alias w3m='w3m google.com'
+alias google='/usr/local/bin/google.sh'
+
+# work in progress:
+# g log --oneline | ag -o "app-\w*" | head -n1 | toupper
+
