@@ -88,27 +88,63 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 # Blend-specific
-# source /Users/nate/Blend/lending/venv/bin/activate
-# export NODE_ENV=dev DEPLOYMENT=blend-borrower TENANT_LIST=blend-borrower
-# ulimit -n 65536 65536
-# pgrep mongod || ( mkdir -p ~/mongodb/data/db && mongod --dbpath ~/mongodb/data/db > /dev/null 2>&1 & )
-# if [ -f ~/.bashrc ]; then
-# 	source ~/.bashrc
-# fi
-# source /Users/nate/Blend/lending/venv/bin/activate
-# export NODE_ENV=dev DEPLOYMENT=blend-borrower TENANT_LIST=blend-borrower
-# ulimit -n 65536 65536
-# pgrep mongod || ( mkdir -p ~/mongodb/data/db && mongod --dbpath ~/mongodb/data/db > /dev/null 2>&1 & )
-# 
-# export NVM_DIR="/Users/nate/.nvm"
-# [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+source /Users/nate/Blend/lending/venv/bin/activate
+export NODE_ENV=dev DEPLOYMENT=blend-borrower TENANT_LIST=blend-borrower
+ulimit -n 65536 65536
+pgrep mongod || ( mkdir -p ~/mongodb/data/db && mongod --dbpath ~/mongodb/data/db > /dev/null 2>&1 & )
+export NVM_DIR="/Users/nate/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
 alias ag='ag --pager="less -SMRi"'
 alias toupper="tr '[:lower:]' '[:upper:]'"
 alias tolower="tr '[:upper:]' '[:lower:]'"
 # alias w3m='w3m google.com' #todo make this work if only no params
 alias google='/usr/local/bin/google.sh'
+function pickaxe() { 
+  git log -S "$1" $2
+}
+function first() {
+  head -n1
+}
+function firstcol() {
+  cut -f 1 -d' '
+}
+alias copy="pbcopy"
+function far() {
+  ag -l $1 | xargs sed -i '' "s/$1/$2/g"
+}
+alias dockerkillall="docker kill $(docker ps -q)"
 
-# work in progress:
-# g log --oneline | ag -o "app-\w*" | head -n1 | toupper
+function alarm() {
+  for i in {1..10}
+  do
+    # OSX specific
+    afplay /System/Library/Sounds/Tink.aiff -v 1
+  done
+}
 
+function countdown() {
+  local now=$(date +%s)
+  local end=$((now + $1))
+  while (( now < end )); do
+    printf "%s\r" "$(date -u -j -f %s $((end - now)) +%T)"
+    sleep 0.25
+    now=$(date +%s)
+  done
+}
+
+function _pomodoro() {
+  # countdown $1
+  # termdown needs pip install, use countdown on new machine
+  termdown $1
+  alarm 
+  osascript -e 'tell app "iTerm2" to display dialog "Pomodoro"'
+}
+function pomodoro() {
+  sleep_time=$(expr 25 \* 60)
+  _pomodoro ${sleep_time}
+}
+function pombreak() {
+  sleep_time=$(expr 5 \* 60)
+  _pomodoro ${sleep_time}
+}
