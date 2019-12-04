@@ -16,13 +16,19 @@ Plugin 'mileszs/ack.vim'
 Plugin 'leafgarland/typescript-vim'
 Plugin 'tpope/vim-fugitive'
 Plugin 'itchyny/lightline.vim'
-Plugin 'sheerun/vim-polyglot'
 Plugin 'tpope/vim-surround'
+Plugin 'fatih/vim-go'
+Plugin 'tpope/vim-unimpaired'
+Plugin 'mdempsky/gocode'
+Plugin 'tpope/vim-abolish'
+" polyglot can cause issues if not plugged last
+Plugin 'sheerun/vim-polyglot'
+let g:polyglot_disabled = ['go']
 
 
-let g:lightline = {
-\ 'colorscheme': 'Dracula',
-\ }
+" let g:lightline = {
+" \ 'colorscheme': 'Dracula',
+" \ }
 
 " Not yet working with local node_modules
 " Plugin 'w0rp/ale'
@@ -44,10 +50,34 @@ nmap ; :call fzf#vim#tags(expand('<cword>'), {'options': '--exact --select-1 --e
 " nmap ; :call fzf#vim#tags(expand('<cword>'), {'options': '--exact --exit-0'})<CR>
 " TODO (decide what hotkey you want here) - Ack aka grep for shit
 map <C-k> :Ack "<cword>"<CR>
-nmap \x :cclose<CR>
+nmap \x :cclose<CR> :pclose<CR>
 " TODO (nw): figure out a good way to do this
 " nmap \r :!tmux send-keys -t 0:0.1 C-p C-j <CR><CR>
 
+" Go-specific hotkeys
+" autocmd FileType go nmap <leader>b  <Plug>(go-build)
+autocmd FileType go nmap <leader>r  <Plug>(go-run)
+autocmd FileType go nmap <leader>ta  <Plug>(go-test)
+autocmd FileType go nmap <leader>tf  <Plug>(go-test-func)
+" autocmd FileType go nmap <leader>tc  <Plug>(go-test-compile)
+function! s:build_go_files()
+  let l:file = expand('%')
+  if l:file =~# '^\f\+_test\.go$'
+    call go#test#Test(0, 1)
+  elseif l:file =~# '^\f\+\.go$'
+    call go#cmd#Build(0)
+  endif
+endfunction
+
+autocmd FileType go nmap <leader>b :<C-u>call <SID>build_go_files()<CR>
+autocmd FileType go nmap <Leader>c <Plug>(go-coverage-toggle)
+let g:go_highlight_types = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_function_calls = 1
+autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=4 shiftwidth=4 
+
+" set completeopt-=preview
 
 if &term =~ '256color'
     " disable Background Color Erase (BCE) so that color schemes
@@ -111,6 +141,7 @@ set hidden
 " window as mentioned above, and/or either of the following options:
 " set confirm
 " set autowriteall
+set autowrite
  
 " Better command-line completion
 set wildmenu
@@ -201,8 +232,8 @@ set expandtab
  
 " Indentation settings for using hard tabs for indent. Display tabs as
 " two characters wide.
-"set shiftwidth=4
-"set tabstop=4
+" set shiftwidth=4
+" set tabstop=4
  
  
 "------------------------------------------------------------
