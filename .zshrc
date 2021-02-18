@@ -158,3 +158,31 @@ export PATH=$PATH:$(go env GOPATH)/bin
 export GOPATH=$(go env GOPATH)
 export PATH=$PATH:/Users/natwilla/Library/Python/2.7/bin
 export AWS_DEFAULT_REGION=us-west-2
+
+# Use homebrew vim instead of osx vim - this will persist across osx updates
+alias vim=/usr/local/bin/vim
+function note() {
+  NOTEDIR=~/Projects/Notes/$(date +%F)-$1
+  mkdir -p $NOTEDIR
+  cd $NOTEDIR
+}
+
+function explore() {
+  PROJECTDIR=~/Projects/Explorations/$(date +%F)-$1
+  mkdir -p $PROJECTDIR
+  cd $PROJECTDIR
+}
+function weather() {
+  curl "wttr.in/San+Francisco?format=v2"
+}
+function spotcycle() {
+  osascript -e 'quit app "/Applications/Spotify.app"'
+  sleep 3
+  open -a Spotify
+  osascript -e 'tell application "spotify" to play'
+}
+export PATH=/Users/natwilla/.toolbox/bin:$PATH
+
+function expose-ngrok() {
+  docker run --rm --net=host -e NGROK_PORT="$1" wernight/ngrok
+}

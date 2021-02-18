@@ -21,6 +21,7 @@ Plugin 'fatih/vim-go'
 Plugin 'tpope/vim-unimpaired'
 Plugin 'mdempsky/gocode'
 Plugin 'tpope/vim-abolish'
+Plugin 'tpope/vim-markdown'
 " polyglot can cause issues if not plugged last
 Plugin 'sheerun/vim-polyglot'
 let g:polyglot_disabled = ['go']
