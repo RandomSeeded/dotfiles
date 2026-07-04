@@ -1,0 +1,98 @@
+{
+  "version": 3,
+  "lines": [
+    [
+      {
+        "id": "1",
+        "type": "model",
+        "color": "cyan"
+      },
+      {
+        "id": "ef27a682-be7a-4c96-ac5c-235970369f51",
+        "type": "thinking-effort",
+        "color": "cyan",
+        "rawValue": true
+      },
+      {
+        "id": "3",
+        "type": "context-length",
+        "color": "blue"
+      },
+      {
+        "id": "2aef917b-aa45-48e0-bcf4-333c66cddc90",
+        "type": "context-percentage",
+        "rawValue": true,
+        "metadata": {
+          "inverse": "false"
+        }
+      },
+      {
+        "id": "5",
+        "type": "git-branch",
+        "color": "magenta"
+      },
+      {
+        "id": "7",
+        "type": "git-changes",
+        "color": "yellow"
+      },
+      {
+        "id": "5b6e573b-3354-4046-9724-31e06f8a7d41",
+        "type": "session-usage",
+        "rawValue": false
+      },
+      {
+        "id": "aa87976e-606b-4e1d-bcae-f30b97ca9728",
+        "type": "reset-timer",
+        "rawValue": true,
+        "metadata": {
+          "display": "time"
+        }
+      },
+      {
+        "id": "79b5d2da-acf8-4d78-98a8-6eea00bd84c5",
+        "type": "tokens-total"
+      },
+      {
+        "id": "3961a2af-37d9-4519-b0f5-1d7912fbf030",
+        "type": "session-cost"
+      },
+      {
+        "id": "b40f6821-a125-4c22-8c08-d61def4a2ba9",
+        "type": "weekly-usage"
+      },
+      {
+        "id": "95552507-b25c-4c98-8635-c869bfd16d80",
+        "type": "weekly-reset-timer"
+      }
+    ],
+    [],
+    []
+  ],
+  "flexMode": "full-minus-40",
+  "compactThreshold": 60,
+  "colorLevel": 2,
+  "defaultPadding": " ",
+  "inheritSeparatorColors": false,
+  "globalBold": false,
+  "gitCacheTtlSeconds": 5,
+  "minimalistMode": false,
+  "powerline": {
+    "enabled": false,
+    "separators": [
+      ""
+    ],
+    "separatorInvertBackground": [
+      false
+    ],
+    "startCaps": [],
+    "endCaps": [],
+    "theme": "monokai",
+    "autoAlign": false,
+    "continueThemeAcrossLines": false
+  },
+  "installation": {
+    "method": "pinned",
+    "installedVersion": "2.2.19"
+  }
+}
