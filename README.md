@@ -27,12 +27,14 @@ backing up anything it would overwrite to `~/.dotfiles-backup/<timestamp>/`.
 | `config/git/ignore` | `~/.config/git/ignore` | global gitignore |
 | `config/nvim/` | `~/.config/nvim` | LazyVim + custom `claude_follow.lua` + plugins |
 | `config/ccstatusline/settings.json` | `~/.config/ccstatusline/settings.json` | Claude Code statusline layout |
-| `claude/` | `~/.claude/*` | settings, `CLAUDE.md`, `/save` command, follow-along hook, custom skills (absorb/advocate/ship) |
+| `claude/` | `~/.claude/*` | settings (allowlist pruned), `CLAUDE.md`, `/save` command, follow-along hook, custom skills (absorb/advocate/ship) |
+| `ssh/config` | `~/.ssh/config` | agent + keychain defaults, GitHub host |
+| `iterm2/` | (manual import) | iTerm2 preferences plist backup |
 | `Brewfile` | — | CLI tools + GUI apps |
 
 ## Manual follow-ups (install.sh prints these too)
 
-- Powerline/Nerd font in iTerm2 (for the agnoster theme) + import iTerm2 prefs.
+- Select "MesloLGS Nerd Font" in iTerm2 (installed via Brewfile) + import prefs from the `iterm2/` folder.
 - Matt Pocock skills: ask Claude to run `/setup-matt-pocock-skills` (14 skills, not vendored here).
 - Re-auth GitHub Copilot and Claude Code.
 - New SSH key → add to GitHub.
@@ -53,7 +55,7 @@ Not vendored (regenerate on the new machine): the 14 Matt Pocock skills
 
 ## Notes
 
-- `claude/settings.json` is copied verbatim, including a large permission allowlist
-  that accumulated project-specific one-offs over time — prune at will.
+- `claude/settings.json` has had its permission allowlist pruned to generic, reusable
+  rules (project-specific one-offs from the old machine were removed).
 - Full pre-migration audit (carry / drop / regenerate decisions per item):
   see the Port Manifest artifact.

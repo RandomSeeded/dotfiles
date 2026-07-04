@@ -52,6 +52,13 @@ fi
 info "Installing cargo tools (fd, bob)"
 cargo install fd-find bob-nvim || echo "  (cargo install skipped/failed — continuing)"
 
+# ── 3b. Extra CLI tools (nap snippets, termdown pomodoro, nvim python provider) ──
+info "Installing nap, termdown, pynvim"
+command -v go   >/dev/null 2>&1 && go install github.com/maaslalani/nap@latest || true
+command -v pipx >/dev/null 2>&1 && pipx install termdown || true
+python3 -m pip install --user pynvim 2>/dev/null \
+  || python3 -m pip install --user --break-system-packages pynvim 2>/dev/null || true
+
 # ── 4. Neovim nightly via bob ──────────────────────────────────
 if command -v bob >/dev/null 2>&1; then
   info "Setting Neovim nightly via bob"
@@ -81,6 +88,9 @@ link "$DOTFILES/config/git/ignore" "$HOME/.config/git/ignore"
 link "$DOTFILES/config/nvim"       "$HOME/.config/nvim"
 link "$DOTFILES/config/ccstatusline/settings.json" "$HOME/.config/ccstatusline/settings.json"
 
+mkdir -p "$HOME/.ssh" && chmod 700 "$HOME/.ssh"
+link "$DOTFILES/ssh/config" "$HOME/.ssh/config"
+
 info "Linking Claude Code config"
 link "$DOTFILES/claude/settings.json"                      "$HOME/.claude/settings.json"
 link "$DOTFILES/claude/CLAUDE.md"                          "$HOME/.claude/CLAUDE.md"
@@ -94,7 +104,8 @@ done
 cat <<'EOF'
 
 Done. Manual follow-ups the script can't do:
-  • Set a Powerline/Nerd font in iTerm2 (agnoster theme) and import your iTerm2 prefs.
+  • In iTerm2, select "MesloLGS Nerd Font" (installed via Brewfile) for the agnoster theme,
+    and import prefs: iTerm2 > Settings > General > Preferences > load from ~/dotfiles/iterm2/.
   • Install the Matt Pocock skills:  ask Claude to run /setup-matt-pocock-skills
   • Re-authenticate GitHub Copilot and Claude Code (claude, then /login).
   • Generate a new SSH key and add it to GitHub:

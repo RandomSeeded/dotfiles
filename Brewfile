@@ -17,6 +17,7 @@ brew "node"
 brew "nvm"                 # node version manager
 brew "ollama", restart_service: :changed
 brew "postgresql@17", restart_service: :changed, link: true
+brew "pipx"                # isolated Python CLIs (termdown)
 brew "pre-commit"
 brew "python@3.13"
 brew "redis", restart_service: :changed
@@ -26,6 +27,7 @@ brew "tmux"
 
 # ── GUI apps (casks) ───────────────────────────────────────────
 cask "iterm2"              # terminal
+cask "font-meslo-lg-nerd-font"  # Powerline glyphs for the agnoster zsh theme
 cask "claude"              # Claude desktop
 cask "docker-desktop"
 cask "obsidian"

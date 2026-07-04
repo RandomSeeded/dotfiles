@@ -1,2 +1,16 @@
 [user]
+	name = Nate Willard
 	email = nate.a.willard@gmail.com
+[init]
+	defaultBranch = main
+[pull]
+	rebase = true
+[push]
+	autoSetupRemote = true
+[core]
+	excludesfile = ~/.config/git/ignore
+[alias]
+	st = status
+	co = checkout
+	br = branch
+	lg = log --oneline --graph --decorate -20

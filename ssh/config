@@ -1,0 +1,10 @@
+# Managed by ~/dotfiles (symlinked to ~/.ssh/config by install.sh)
+
+Host *
+	AddKeysToAgent yes
+	UseKeychain yes
+	IdentityFile ~/.ssh/id_ed25519
+
+Host github.com
+	HostName github.com
+	User git
