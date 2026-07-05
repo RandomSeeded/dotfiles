@@ -4,6 +4,9 @@
 #
 #   ./install.sh
 #
+# Testing:
+#   LINKS_ONLY=1 HOME=/tmp/dt ./install.sh   # only create symlinks, skip all installs
+#
 set -uo pipefail
 
 DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -26,6 +29,9 @@ link() {
   ln -s "$src" "$dst"
   echo "  linked $dst -> $src"
 }
+
+# All install steps below are skipped when LINKS_ONLY=1 (for testing the symlinks).
+if [ "${LINKS_ONLY:-0}" != "1" ]; then
 
 # ── 1. Homebrew ────────────────────────────────────────────────
 if ! command -v brew >/dev/null 2>&1; then
@@ -77,6 +83,8 @@ if [ -x "$(brew --prefix)/opt/fzf/install" ]; then
   info "Installing fzf shell integration"
   "$(brew --prefix)/opt/fzf/install" --key-bindings --completion --no-update-rc || true
 fi
+
+fi  # end install steps (skipped when LINKS_ONLY=1)
 
 # ── 7. Symlinks ────────────────────────────────────────────────
 info "Linking dotfiles"
