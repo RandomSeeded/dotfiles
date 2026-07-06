@@ -6,16 +6,24 @@
 -- Requires a local llama-server (or any OpenAI-compatible endpoint) serving a
 -- next-edit model — see the project README.
 --
--- What this does:
---   1. Registers our LSP server (named with "copilot" so sidekick's name-based
---      NES client selection is eligible to pick it).
---   2. Overrides sidekick's get_client so NES requests route to OUR server
---      rather than copilot.lua's "copilot" client (which also implements
---      copilotInlineEdit but returns empty on the Free tier). copilot.lua stays
---      for inline ghost text.
---   3. Turns sidekick NES back on.
+-- STATUS: DISABLED — using real GitHub Copilot NES instead (see plugins/sidekick.lua;
+-- the account's NES entitlement activated 2026-07-05). Set ENABLED = true to switch
+-- back to the local-model backend (needs a local model endpoint serving).
+--
+-- What this does when ENABLED:
+--   1. Pulls + builds the server via lazy.nvim, registers it as an LSP server.
+--   2. Overrides sidekick's get_client so NES requests route to OUR server rather
+--      than the copilot-language-server "copilot" client.
+
+local ENABLED = false
 
 local SERVER_NAME = "local-copilot-nes"
+
+-- When disabled, do nothing: sidekick uses the real `copilot` client (GitHub
+-- Copilot NES). Nothing below runs — the repo isn't even cloned by lazy.
+if not ENABLED then
+  return {}
+end
 
 -- 2. Route sidekick NES to our server (load-order-safe: patch once sidekick exists).
 vim.api.nvim_create_autocmd("User", {
@@ -48,7 +56,7 @@ return {
       vim.lsp.enable(SERVER_NAME)
     end,
   },
-  -- 3. Re-enable sidekick NES (it was disabled while we were on Copilot NES).
+  -- Keep sidekick NES enabled (also set in plugins/sidekick.lua).
   {
     "folke/sidekick.nvim",
     opts = { nes = { enabled = true } },

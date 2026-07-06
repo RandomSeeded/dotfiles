@@ -7,23 +7,29 @@ return {
   -- giving a duplicate. Two servers open the same SQLite DBs
   -- (~/.config/github-copilot/auth.db + the tfidf index) and race for the lock,
   -- producing "database is locked" -> tfidfWorker crash -> "copilot exit code 143".
-  -- Disabling it here guarantees only copilot.lua's single server runs.
-  -- (Verified: removing this brings back 2 copilot clients even with NES off.)
+  -- SIDEKICK-CANONICAL SETUP: sidekick's README wants the copilot-language-server
+  -- enabled via nvim-lspconfig (`vim.lsp.enable("copilot")`) — that config provides
+  -- :LspCopilotSignIn and is the client sidekick attaches to. copilot.lua's OWN
+  -- bundled server is disabled in plugins/editor.lua so exactly ONE copilot server
+  -- runs (no auth.db lock race). Revert: set enabled=false here + re-enable copilot.lua.
   {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
-        copilot = { enabled = false },
+        copilot = { enabled = true },
       },
     },
   },
   {
     "folke/sidekick.nvim",
-    -- NES (Next Edit Suggestions) is powered by a LOCAL model via local-copilot-nes
-    -- (see plugins/local-copilot-nes.lua), which registers our LSP server and routes
-    -- sidekick's NES client to it. To revert: set this back to false and delete
-    -- plugins/local-copilot-nes.lua.
-    opts = { nes = { enabled = true } },
+    -- NES (Next Edit Suggestions) is powered by GitHub Copilot via the
+    -- copilot-language-server enabled above (nvim-lspconfig `copilot`). The local
+    -- NES alternative is parked in plugins/local-copilot-nes.lua (ENABLED=false).
+    -- clear.esc=false: don't dismiss a pending/visible suggestion on <Esc> —
+    -- the natural flow is edit-in-insert -> Esc -> suggestion appears, and habitual
+    -- extra Esc presses were nuking it. Typing again (TextChangedI/InsertEnter)
+    -- still clears stale suggestions.
+    opts = { nes = { enabled = true, clear = { esc = false } } },
     keys = {
       -- Tab: jump to / apply next edit suggestion, fallback to normal tab
       {
@@ -86,7 +92,18 @@ return {
       {
         "<leader>ap",
         function()
-          require("sidekick.cli").prompt()
+          -- Auto-run the selected prompt. sidekick's default prompt callback
+          -- calls send({ text }) WITHOUT submit, which only stuffs text into the
+          -- CLI pane -- you'd then have to switch panes and press Enter yourself.
+          -- Passing submit = true makes sidekick fire `tmux send-keys Enter` at
+          -- the target pane remotely, so the prompt actually runs in place.
+          require("sidekick.cli").prompt({
+            cb = function(_, text)
+              if text then
+                require("sidekick.cli").send({ text = text, submit = true })
+              end
+            end,
+          })
         end,
         mode = { "n", "x" },
         desc = "Sidekick Prompt",

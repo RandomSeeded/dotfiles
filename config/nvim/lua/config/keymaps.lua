@@ -48,15 +48,15 @@ vim.keymap.set("n", "<leader>lk", vim.diagnostic.goto_prev, { desc = "Prev Diagn
 local ai_enabled = true
 vim.keymap.set("n", "<leader>ad", function()
   if ai_enabled then
-    require("copilot.suggestion").dismiss()
-    require("copilot.command").disable()
+    pcall(function() require("copilot.suggestion").dismiss() end) -- copilot.lua may be disabled
+    pcall(function() require("copilot.command").disable() end)
     local nes = require("sidekick.nes")
     if nes.enabled then
       nes.disable()
     end
     vim.notify("AI disabled", vim.log.levels.INFO)
   else
-    require("copilot.command").enable()
+    pcall(function() require("copilot.command").enable() end)
     local nes = require("sidekick.nes")
     if not nes.enabled then
       nes.enable()

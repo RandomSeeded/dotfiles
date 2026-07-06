@@ -28,6 +28,9 @@ vim.opt.fillchars = {
   foldsep = "│",
 }
 
+-- Don't render tabs as visible markers (default was tab:"> "); keep trailing/nbsp hints.
+vim.opt.listchars = { tab = "  ", trail = "-", nbsp = "+" }
+
 -- Absolute line numbers only
 vim.opt.relativenumber = false
 
@@ -60,7 +63,14 @@ do
   lsp_client.create = function(config)
     config = config or {}
     config.flags = config.flags or {}
-    if config.flags.allow_incremental_sync == nil then
+    -- EXCEPTION: copilot must keep incremental sync. With full-document sync, every
+    -- didChange is a whole-file snapshot with no edit ranges, so the server's Local
+    -- Diff Tracker never registers "recent edits" and NES (copilotInlineEdit) returns
+    -- {edits={}} forever WITHOUT even calling the model. Verified 2026-07-05: same
+    -- server+account+edits — incremental → NES edit returned; full sync → always empty.
+    -- Trade-off: the nvim#33224 crash could resurface on the copilot client; if it
+    -- does, prefer updating nvim over re-adding full sync here (that kills NES).
+    if config.flags.allow_incremental_sync == nil and config.name ~= "copilot" then
       config.flags.allow_incremental_sync = false
     end
     return orig_create(config)

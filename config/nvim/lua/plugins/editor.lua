@@ -80,7 +80,14 @@ return {
     "folke/snacks.nvim",
     opts = {
       scroll = { enabled = false },
-      indent = { enabled = false },
+      -- Show only the current block's scope line (│ from top to bottom of the
+      -- block your cursor is in) -- no always-on per-level indent guides.
+      indent = {
+        enabled = true,
+        indent = { enabled = false }, -- suppress the per-level guides (the noise)
+        scope = { enabled = true, char = "│" }, -- the block-extent line
+        animate = { enabled = false }, -- flip to true for the sweep animation
+      },
       picker = {
         sources = {
           files = { follow = true },
@@ -147,6 +154,11 @@ return {
   -- { "github/copilot.vim" },
   {
     "zbirenbaum/copilot.lua",
+    -- DISABLED for the sidekick-canonical setup: NES now uses nvim-lspconfig's
+    -- copilot-language-server (see plugins/sidekick.lua). Running copilot.lua too would
+    -- start a SECOND copilot server and race on auth.db. Re-enable (set enabled=true, or
+    -- delete this line) to get inline ghost text back; or use native vim.lsp.inline_completion.
+    enabled = false,
     cmd = "Copilot",
     event = "InsertEnter",
     config = function()
