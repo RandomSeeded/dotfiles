@@ -15,25 +15,19 @@ local watch = {
   active = false,
   handle = nil,
   last_mtime = 0,
-  tabpage = nil, -- dedicated watch tab
+  win = nil, -- window pinned when watch mode was enabled
 }
-
--- Return the watch tab's first window, creating the tab if needed.
--- Does not steal focus from the current tab.
-local function watch_ensure_win()
-  if watch.tabpage and vim.api.nvim_tabpage_is_valid(watch.tabpage) then
-    return vim.api.nvim_tabpage_list_wins(watch.tabpage)[1]
-  end
-  local prev = vim.api.nvim_get_current_tabpage()
-  vim.cmd("tabnew")
-  watch.tabpage = vim.api.nvim_get_current_tabpage()
-  vim.api.nvim_set_current_tabpage(prev)
-  return vim.api.nvim_tabpage_list_wins(watch.tabpage)[1]
-end
 
 local function watch_open_entry(entry)
   if vim.fn.filereadable(entry.file) == 0 then return end
-  local win = watch_ensure_win()
+  -- Load into the window where watch mode was enabled (pinned), even if focus
+  -- has since moved to another tab/window. Falls back to the focused window
+  -- (and re-pins) only if the pinned window has been closed.
+  local win = watch.win
+  if not (win and vim.api.nvim_win_is_valid(win)) then
+    win = vim.api.nvim_get_current_win()
+    watch.win = win
+  end
   vim.api.nvim_win_call(win, function()
     vim.cmd("edit " .. vim.fn.fnameescape(entry.file))
     if entry.line then
@@ -72,6 +66,7 @@ local function watch_stop()
     watch.handle = nil
   end
   watch.active = false
+  watch.win = nil
   vim.notify("claude-follow: watch off", vim.log.levels.INFO)
 end
 
@@ -86,9 +81,6 @@ local function watch_toggle()
   local latest = cf.latest_entry(cf.load_state())
   watch.last_mtime = latest and latest.mtime or 0
 
-  -- Ensure the dedicated tab exists before starting the watcher.
-  watch_ensure_win()
-
   local handle = uv.new_fs_event()
   handle:start(STATE_PATH, {}, vim.schedule_wrap(function(err, _, _)
     if err then return end
@@ -97,7 +89,9 @@ local function watch_toggle()
 
   watch.handle = handle
   watch.active = true
-  vim.notify("claude-follow: watch on (tab " .. vim.api.nvim_tabpage_get_number(watch.tabpage) .. ")", vim.log.levels.INFO)
+  watch.win = vim.api.nvim_get_current_win()
+  local tab = vim.api.nvim_tabpage_get_number(vim.api.nvim_win_get_tabpage(watch.win))
+  vim.notify("claude-follow: watch on (pinned to tab " .. tab .. ")", vim.log.levels.INFO)
 end
 
 local function open_picker()
