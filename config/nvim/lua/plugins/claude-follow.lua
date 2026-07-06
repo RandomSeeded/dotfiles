@@ -18,15 +18,25 @@ local watch = {
   win = nil, -- window pinned when watch mode was enabled
 }
 
+local function watch_stop(reason)
+  if watch.handle then
+    watch.handle:stop()
+    watch.handle = nil
+  end
+  watch.active = false
+  watch.win = nil
+  vim.notify("claude-follow: watch off" .. (reason and (" (" .. reason .. ")") or ""), vim.log.levels.INFO)
+end
+
 local function watch_open_entry(entry)
   if vim.fn.filereadable(entry.file) == 0 then return end
   -- Load into the window where watch mode was enabled (pinned), even if focus
-  -- has since moved to another tab/window. Falls back to the focused window
-  -- (and re-pins) only if the pinned window has been closed.
+  -- has since moved to another tab/window. If that window is gone, the watch
+  -- session is over — cancel rather than follow focus elsewhere.
   local win = watch.win
   if not (win and vim.api.nvim_win_is_valid(win)) then
-    win = vim.api.nvim_get_current_win()
-    watch.win = win
+    watch_stop("pinned window closed")
+    return
   end
   vim.api.nvim_win_call(win, function()
     vim.cmd("edit " .. vim.fn.fnameescape(entry.file))
@@ -58,16 +68,6 @@ local function watch_check()
     watch.last_mtime = latest.mtime
     watch_open_entry(latest)
   end
-end
-
-local function watch_stop()
-  if watch.handle then
-    watch.handle:stop()
-    watch.handle = nil
-  end
-  watch.active = false
-  watch.win = nil
-  vim.notify("claude-follow: watch off", vim.log.levels.INFO)
 end
 
 local function watch_toggle()
