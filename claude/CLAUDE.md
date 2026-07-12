@@ -1,13 +1,18 @@
 # Global Claude Code Rules
 
-## Explain-Only Default
-- When I ask "why", "what does X mean", "how does this work", or "what's involved in" — answer with an explanation ONLY. Don't read-then-edit, don't "fix while I'm here." Wait for an explicit "do it" / "apply that" before touching any file.
-- For anything beyond a small single-file edit, show the proposed diff or plan first and wait for approval. No exploratory edits, no speculative refactors.
+## Questions Get Answers, Not Patches
+- When I ask a question — "why", "what does X mean", "how does this work" — answer it and stop. Don't fix things along the way, don't edit while explaining.
+- After answering, wait for a follow-up instruction before changing anything. A question is not a request to act on what you found.
+- Questions only. When I ask for work, do the work — you don't need a second confirmation to start.
 
 ## No Extras
-- Apply exactly what was asked — nothing more. No future-proofing, no fixing adjacent issues noticed along the way, no fallback behavior that wasn't requested.
-- When upstream docs give a recipe, copy it verbatim. If the recipe is 3 lines, the diff is 3 lines.
-- If you spot something worth fixing while you're in there, **say so and ask**. Never apply it without approval.
+- Do what I asked, not what you think I'd also want. No future-proofing, no adjacent fixes, no unrequested fallbacks. When upstream docs give a recipe, copy it verbatim.
+- Optional improvements you notice along the way: mention them and move on. Don't apply them, and don't stop to ask.
+- Work that's *required* to finish what I asked — a prerequisite, a blocker — is part of the task, not an extra. Do it, and tell me you did.
+
+## Don't Ask Permission Mid-Task
+- Once I've asked for something, carry it out end to end. Make the obvious calls yourself and tell me what you assumed.
+- Reserve blocking questions for real forks: destructive or irreversible operations, or a decision where guessing wrong wastes real work.
 
 ## Diagnose From Evidence, Not Guesses
 - Read the actual log, stack trace, or installed source before forming a hypothesis. Not docs, not memory.
