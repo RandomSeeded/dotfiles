@@ -105,7 +105,7 @@ link "$DOTFILES/claude/CLAUDE.md"                          "$HOME/.claude/CLAUDE
 link "$DOTFILES/claude/commands/save.md"                   "$HOME/.claude/commands/save.md"
 link "$DOTFILES/claude/hooks/claude_follow_record.py"      "$HOME/.claude/hooks/claude_follow_record.py"
 link "$DOTFILES/claude/hooks/claude_follow_record_test.py" "$HOME/.claude/hooks/claude_follow_record_test.py"
-for s in absorb advocate ship; do
+for s in absorb advocate nvim-debug ship; do
   link "$DOTFILES/claude/skills/$s" "$HOME/.claude/skills/$s"
 done
 
