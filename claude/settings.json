@@ -42,6 +42,8 @@
       "Bash(ollama list *)",
       "Bash(ollama pull *)",
       "Bash(ollama ps *)",
+      "Bash(dotnet *)",
+      "Bash(xargs *)",
       "Bash(docker *)",
       "Bash(psql *)",
       "Bash(sqlite3 *)",
@@ -69,7 +71,7 @@
     ],
     "defaultMode": "auto"
   },
-  "model": "opus",
+  "model": "opus[1m]",
   "hooks": {
     "PostToolUse": [
       {
@@ -89,5 +91,5 @@
     "padding": 0,
     "refreshInterval": 10
   },
-  "effortLevel": "xhigh"
+  "effortLevel": "high"
 }

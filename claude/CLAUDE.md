@@ -11,7 +11,8 @@
 - Say "I don't know yet" and name what to pull next, rather than offering a plausible-sounding cause.
 
 ## Revert Means Restore
-- "Revert" means restore the exact prior state, verified with `git diff` / `git status` — not delete the line, not reconstruct from memory.
+- "Revert that" means undo the most recent change only. Don't unwind the whole session back to the last commit. If more than one step is in play and it's ambiguous which to undo, ask before touching anything.
+- Whatever the scope, restore the exact prior content of that step — don't delete the line, don't reconstruct it from memory. If the prior state isn't reliably known, say so and ask rather than guessing.
 
 ## Confirm Working Directory
 - Before any repo-wide or destructive operation (history rewrite, code review, audit, mass move), print `pwd` and the repo root and confirm it's the intended target. Never assume the session cwd is the right repo.
