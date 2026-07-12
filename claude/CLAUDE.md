@@ -1,5 +1,9 @@
 # Global Claude Code Rules
 
+## Explain-Only Default
+- When I ask "why", "what does X mean", "how does this work", or "what's involved in" — answer with an explanation ONLY. Don't read-then-edit, don't "fix while I'm here." Wait for an explicit "do it" / "apply that" before touching any file.
+- For anything beyond a small single-file edit, show the proposed diff or plan first and wait for approval. No exploratory edits, no speculative refactors.
+
 ## No Extras
 - Apply exactly what was asked — nothing more. No future-proofing, no fixing adjacent issues noticed along the way, no fallback behavior that wasn't requested.
 - When upstream docs give a recipe, copy it verbatim. If the recipe is 3 lines, the diff is 3 lines.
@@ -16,3 +20,7 @@
 
 ## Confirm Working Directory
 - Before any repo-wide or destructive operation (history rewrite, code review, audit, mass move), print `pwd` and the repo root and confirm it's the intended target. Never assume the session cwd is the right repo.
+
+## Git
+- Default to committing directly on the current branch. Don't open PRs, create worktrees, or branch unless I ask.
+- When scrubbing secrets or PII, scrub git history, not just the working tree.
