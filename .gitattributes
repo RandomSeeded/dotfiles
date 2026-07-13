@@ -1,0 +1,4 @@
+# iterm2/export.sh writes the prefs plist as XML (not Apple's default binary format)
+# specifically so preference changes show up as readable diffs. Tell git it's text —
+# without this it can fall back to treating the file as binary.
+iterm2/*.plist text diff

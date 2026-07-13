@@ -27,7 +27,8 @@ brew "tmux"
 
 # ── GUI apps (casks) ───────────────────────────────────────────
 cask "iterm2"              # terminal
-cask "font-meslo-lg-nerd-font"  # Powerline glyphs for the agnoster zsh theme
+cask "font-droid-sans-mono-nerd-font"  # the font iterm2/*.plist actually selects (DroidSansMNFM)
+cask "font-meslo-lg-nerd-font"         # spare Powerline/Nerd font for the agnoster zsh theme
 cask "claude"              # Claude desktop
 cask "docker-desktop"
 cask "obsidian"

@@ -84,10 +84,37 @@ if [ -x "$(brew --prefix)/opt/fzf/install" ]; then
   "$(brew --prefix)/opt/fzf/install" --key-bindings --completion --no-update-rc || true
 fi
 
+# ── 7. iTerm2 preferences ──────────────────────────────────────
+# Use `defaults import`, NOT `cp` into ~/Library/Preferences. macOS caches preferences
+# in cfprefsd; a raw copy is ignored and then silently overwritten from that cache when
+# iTerm2 next quits. `defaults import` writes through the cache, so it actually sticks.
+#
+# iTerm2 must not be running: it holds prefs in memory and flushes them on quit, which
+# would clobber what we just imported.
+if [ -f "$DOTFILES/iterm2/com.googlecode.iterm2.plist" ]; then
+  if pgrep -xq iTerm2; then
+    echo "  iTerm2 is running — skipping prefs import."
+    echo "  Quit iTerm2, then: defaults import com.googlecode.iterm2 $DOTFILES/iterm2/com.googlecode.iterm2.plist"
+  else
+    info "Importing iTerm2 preferences"
+    defaults import com.googlecode.iterm2 "$DOTFILES/iterm2/com.googlecode.iterm2.plist"
+    killall cfprefsd 2>/dev/null || true   # force the daemon to re-read from disk
+    echo "  imported (font, colors, and the 'tmux' initial-text profile setting)"
+  fi
+fi
+
+# ── 8. macOS system preferences ────────────────────────────────
+info "Applying macOS system preferences"
+"$DOTFILES/macos.sh" || echo "  (macos.sh failed — continuing)"
+
 fi  # end install steps (skipped when LINKS_ONLY=1)
 
-# ── 7. Symlinks ────────────────────────────────────────────────
+# ── 9. Symlinks ────────────────────────────────────────────────
 info "Linking dotfiles"
+# iTerm2's Semantic History (cmd-click a file:line to open it in nvim) shells out to
+# this exact path. It runs an executable, not a shell function, so the `vf` function in
+# zshrc cannot serve it — the script has to exist on disk or cmd-click silently no-ops.
+link "$DOTFILES/bin/vf"            "$HOME/.local/bin/vf"
 link "$DOTFILES/home/zshrc"        "$HOME/.zshrc"
 link "$DOTFILES/home/zshenv"       "$HOME/.zshenv"
 link "$DOTFILES/home/tmux.conf"    "$HOME/.tmux.conf"
@@ -112,8 +139,11 @@ done
 cat <<'EOF'
 
 Done. Manual follow-ups the script can't do:
-  • In iTerm2, select "MesloLGS Nerd Font" (installed via Brewfile) for the agnoster theme,
-    and import prefs: iTerm2 > Settings > General > Preferences > load from ~/dotfiles/iterm2/.
+  • Log out and back in — the keyboard modifier maps (Caps Lock -> Esc, Option/Command
+    swap) only bind after a fresh login.
+  • Re-grant privacy permissions by hand; they live in the SIP-protected TCC database:
+    Accessibility / Screen Recording / Full Disk Access / Automation for iTerm, VS Code,
+    Claude, Docker, Bazecor, Zoom.
   • Install the Matt Pocock skills:  ask Claude to run /setup-matt-pocock-skills
   • Re-authenticate GitHub Copilot and Claude Code (claude, then /login).
   • Generate a new SSH key and add it to GitHub:

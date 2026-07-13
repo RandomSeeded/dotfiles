@@ -1,0 +1,75 @@
+#!/usr/bin/env zsh
+# Open file[:line] in running nvim. Calling conventions:
+#   vf file:line       (shell/tmux)
+#   vf +line file      (iTerm2 "open with editor")
+#   vf file line       (iTerm2 "run command": \1 \2)
+#   vf file://host/path (iTerm2 file:// URL)
+
+# Normalize a leading file:// URL into a plain absolute path (strip scheme + host,
+# percent-decode). iTerm2 hands these to us for file:// links; bare paths pass through.
+if [[ "$1" == file://* ]]; then
+    url="${1#file://}"           # drop scheme  -> "host/path" or "/path"
+    url="/${url#*/}"             # drop host    -> "/path"
+    [[ "$url" == *%* ]] && url="$(echo -e "${url//\%/\\x}")"  # percent-decode (%20 -> space)
+    set -- "$url" "${@:2}"
+fi
+
+if [[ "$1" == +* ]]; then
+    line="${1#+}"
+    file="$2"
+elif [[ $# -ge 2 && "$2" =~ ^[0-9]+$ ]]; then
+    file="$1"
+    line="$2"
+else
+    arg="${1:-}"
+    file="${arg%:*}"
+    line="${arg##*:}"
+    [[ "$line" == "$file" ]] && line=""
+fi
+
+[[ -z "$file" ]] && exit 1
+
+# Expand a leading ~ (Claude Code and others print paths like ~/.local/bin/vf)
+[[ "$file" == "~" || "$file" == "~/"* ]] && file="${HOME}${file#\~}"
+
+# Resolve to absolute path — try each candidate; use first where target actually exists
+if [[ "$file" != /* ]]; then
+    local resolved=""
+    for basedir in "${3:-}" "${TMUX:+$PWD}" "$(tmux display-message -p '#{pane_current_path}' 2>/dev/null)" "$PWD"; do
+        [[ -n "$basedir" && -e "$basedir/$file" ]] && { resolved="$basedir/$file"; break; }
+    done
+    file="${resolved:-${3:-$PWD}/$file}"
+fi
+
+# Bail if the target doesn't exist (guards against "always run command" on non-file clicks).
+# Accepts dirs too — nvim opens them in its file explorer (netrw/oil).
+[[ -e "$file" ]] || exit 1
+
+# Route by type: binary files (images, PDFs, executables) go to the macOS default app;
+# text, empty, and directories fall through to nvim. `file` tags binaries charset=binary,
+# but dirs/empty also report that — so exclude them explicitly.
+if [[ ! -d "$file" ]]; then
+    mime=$(file -bL --mime "$file" 2>/dev/null)
+    if [[ "$mime" != inode/x-empty* && "$mime" == *charset=binary* ]]; then
+        /usr/bin/open "$file"
+        exit 0
+    fi
+fi
+
+# Find socket: prefer current tmux window → primary (most recent) → any
+socket="/tmp/nvim_$(tmux display-message -p '#{session_name}_#{window_index}' 2>/dev/null).sock"
+if [[ ! -S "$socket" ]]; then
+    socket=/tmp/nvim_primary.sock
+fi
+if [[ ! -S "$socket" ]]; then
+    socket=$(ls -t /tmp/nvim_*.sock 2>/dev/null | head -1)
+fi
+
+# No socket = nvim not running; exit cleanly (no fallback that keeps a terminal alive)
+[[ -S "$socket" ]] || exit 1
+
+if [[ -n "$line" && "$line" =~ ^[0-9]+$ && "$line" != "0" ]]; then
+    /opt/homebrew/bin/nvim --server "$socket" --remote-send "<Esc>:tabe +${line} ${file}<CR>"
+else
+    /opt/homebrew/bin/nvim --server "$socket" --remote-send "<Esc>:tabe ${file}<CR>"
+fi
